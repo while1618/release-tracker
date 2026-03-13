@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DATABASE:release-tracker}
+    password: ${POSTGRES_PASSWORD:root}
+  jpa:
+    hibernate:
+      ddl-auto: validate

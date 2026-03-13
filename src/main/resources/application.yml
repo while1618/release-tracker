@@ -1,0 +1,11 @@
+server:
+  port: ${API_PORT:8080}
+
+spring:
+  application:
+    name: releasetracker
+  sql:
+    init:
+      platform: postgres
+  datasource:
+    username: ${POSTGRES_USER:postgres}

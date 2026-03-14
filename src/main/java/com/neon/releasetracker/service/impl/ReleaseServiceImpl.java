@@ -4,13 +4,13 @@ import com.neon.releasetracker.dto.CreateReleaseRequest;
 import com.neon.releasetracker.dto.ReleaseDTO;
 import com.neon.releasetracker.dto.ReleaseFilter;
 import com.neon.releasetracker.dto.UpdateReleaseRequest;
+import com.neon.releasetracker.error.exception.InvalidStatusTransitionException;
+import com.neon.releasetracker.error.exception.ReleaseNotFoundException;
 import com.neon.releasetracker.mapper.ReleaseMapper;
 import com.neon.releasetracker.model.Release;
 import com.neon.releasetracker.model.ReleaseStatus;
 import com.neon.releasetracker.repository.ReleaseRepository;
 import com.neon.releasetracker.service.ReleaseService;
-import com.neon.releasetracker.error.exception.InvalidStatusTransitionException;
-import com.neon.releasetracker.error.exception.ReleaseNotFoundException;
 import com.neon.releasetracker.specification.ReleaseSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -53,9 +53,7 @@ public class ReleaseServiceImpl implements ReleaseService {
   @Transactional
   public ReleaseDTO update(Long id, UpdateReleaseRequest request) {
     Release release =
-        releaseRepository
-            .findById(id)
-            .orElseThrow(() -> new ReleaseNotFoundException(id));
+        releaseRepository.findById(id).orElseThrow(() -> new ReleaseNotFoundException(id));
     if (release.getStatus() != request.status()
         && !release.getStatus().canTransitionTo(request.status())) {
       throw new InvalidStatusTransitionException(

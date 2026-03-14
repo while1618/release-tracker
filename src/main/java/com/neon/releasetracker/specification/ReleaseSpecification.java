@@ -23,8 +23,7 @@ public class ReleaseSpecification {
   }
 
   private static Specification<Release> hasStatus(ReleaseStatus status) {
-    return (root, query, cb) ->
-        status == null ? null : cb.equal(root.get("status"), status);
+    return (root, query, cb) -> status == null ? null : cb.equal(root.get("status"), status);
   }
 
   private static Specification<Release> releaseDateFrom(LocalDate from) {

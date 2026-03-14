@@ -11,8 +11,9 @@ import com.neon.releasetracker.repository.ReleaseRepository;
 import com.neon.releasetracker.service.ReleaseService;
 import com.neon.releasetracker.error.exception.ReleaseNotFoundException;
 import com.neon.releasetracker.specification.ReleaseSpecification;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,10 +26,10 @@ public class ReleaseServiceImpl implements ReleaseService {
   private final ReleaseMapper releaseMapper;
 
   @Override
-  public List<ReleaseDTO> findAll(ReleaseFilter filter) {
-    return releaseRepository.findAll(ReleaseSpecification.withFilter(filter)).stream()
-        .map(releaseMapper::toDTO)
-        .toList();
+  public Page<ReleaseDTO> findAll(ReleaseFilter filter, Pageable pageable) {
+    return releaseRepository
+        .findAll(ReleaseSpecification.withFilter(filter), pageable)
+        .map(releaseMapper::toDTO);
   }
 
   @Override

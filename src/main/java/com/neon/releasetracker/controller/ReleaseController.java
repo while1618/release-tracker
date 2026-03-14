@@ -8,8 +8,9 @@ import com.neon.releasetracker.model.ReleaseStatus;
 import com.neon.releasetracker.service.ReleaseService;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,13 +31,15 @@ public class ReleaseController {
   private final ReleaseService releaseService;
 
   @GetMapping
-  public ResponseEntity<List<ReleaseDTO>> findAll(
+  public ResponseEntity<Page<ReleaseDTO>> findAll(
       @RequestParam(required = false) String name,
       @RequestParam(required = false) ReleaseStatus status,
       @RequestParam(required = false) LocalDate releaseDateFrom,
-      @RequestParam(required = false) LocalDate releaseDateTo) {
+      @RequestParam(required = false) LocalDate releaseDateTo,
+      Pageable pageable) {
     return ResponseEntity.ok(
-        releaseService.findAll(new ReleaseFilter(name, status, releaseDateFrom, releaseDateTo)));
+        releaseService.findAll(
+            new ReleaseFilter(name, status, releaseDateFrom, releaseDateTo), pageable));
   }
 
   @GetMapping("/{id}")

@@ -4,11 +4,12 @@ import com.neon.releasetracker.dto.CreateReleaseRequest;
 import com.neon.releasetracker.dto.ReleaseDTO;
 import com.neon.releasetracker.dto.ReleaseFilter;
 import com.neon.releasetracker.dto.UpdateReleaseRequest;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ReleaseService {
 
-  List<ReleaseDTO> findAll(ReleaseFilter filter);
+  Page<ReleaseDTO> findAll(ReleaseFilter filter, Pageable pageable);
 
   ReleaseDTO findById(Long id);
 

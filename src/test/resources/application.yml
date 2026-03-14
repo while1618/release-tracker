@@ -22,3 +22,8 @@ spring:
         query:
           fail_on_pagination_over_collection_fetch: true
     open-in-view: false
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+        one-indexed-parameters: true

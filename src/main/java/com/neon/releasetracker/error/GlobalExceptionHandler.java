@@ -1,6 +1,7 @@
 package com.neon.releasetracker.error;
 
 import com.neon.releasetracker.error.exception.ReleaseNotFoundException;
+import com.neon.releasetracker.logger.CustomLogger;
 import com.neon.releasetracker.service.ErrorService;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   private final ErrorService errorService;
+  private final CustomLogger customLogger;
 
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
@@ -30,6 +32,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
       @Nonnull HttpHeaders headers,
       @Nonnull HttpStatusCode statusCode,
       @Nonnull WebRequest request) {
+    customLogger.error("Validation failed", e);
     final var status = (HttpStatus) statusCode;
     final var errorMessage = new ErrorMessage(status);
     final var result = e.getBindingResult();
@@ -52,11 +55,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler({ReleaseNotFoundException.class})
   public ResponseEntity<Object> handleResourceNotFoundException(ReleaseNotFoundException e) {
+    customLogger.error("Release not found", e);
     return createError(e.getStatus(), errorService.getMessage(e.getMessage(), e.getId()));
   }
 
   @ExceptionHandler({Exception.class})
   public ResponseEntity<Object> handleGlobalException(Exception e) {
+    customLogger.error("Unhandled exception", e);
     return createError(
         HttpStatus.INTERNAL_SERVER_ERROR, errorService.getMessage("server.internalError"));
   }
@@ -67,6 +72,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
       @Nonnull HttpHeaders headers,
       @Nonnull HttpStatusCode statusCode,
       @Nonnull WebRequest request) {
+    customLogger.error("Missing request parameter", e);
     return createError(
         (HttpStatus) statusCode, errorService.getMessage("request.parameterMissing"));
   }
@@ -77,6 +83,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
       @Nonnull HttpHeaders headers,
       @Nonnull HttpStatusCode statusCode,
       @Nonnull WebRequest request) {
+    customLogger.error("HTTP method not supported", e);
     return createError(
         (HttpStatus) statusCode, errorService.getMessage("request.methodNotSupported"));
   }
@@ -87,6 +94,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
       @Nonnull HttpHeaders headers,
       @Nonnull HttpStatusCode statusCode,
       @Nonnull WebRequest request) {
+    customLogger.error("HTTP message not readable", e);
     return createError(
         (HttpStatus) statusCode, errorService.getMessage("request.messageNotReadable"));
   }
@@ -94,6 +102,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler({MethodArgumentTypeMismatchException.class})
   public ResponseEntity<Object> handleMethodArgumentTypeMismatch(
       MethodArgumentTypeMismatchException e) {
+    customLogger.error("Method argument type mismatch", e);
     return createError(
         HttpStatus.BAD_REQUEST, errorService.getMessage("request.parameterTypeMismatch"));
   }

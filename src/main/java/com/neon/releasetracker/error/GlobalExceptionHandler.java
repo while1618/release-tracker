@@ -1,5 +1,6 @@
 package com.neon.releasetracker.error;
 
+import com.neon.releasetracker.error.exception.InvalidStatusTransitionException;
 import com.neon.releasetracker.error.exception.ReleaseNotFoundException;
 import com.neon.releasetracker.logger.CustomLogger;
 import com.neon.releasetracker.service.ErrorService;
@@ -51,6 +52,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     final var header = new HttpHeaders();
     header.setContentType(MediaType.APPLICATION_PROBLEM_JSON);
     return header;
+  }
+
+  @ExceptionHandler({InvalidStatusTransitionException.class})
+  public ResponseEntity<Object> handleInvalidStatusTransition(InvalidStatusTransitionException e) {
+    customLogger.error("Invalid status transition", e);
+    return createError(e.getStatus(), errorService.getMessage(e.getMessage(), e.getArgs()));
   }
 
   @ExceptionHandler({ReleaseNotFoundException.class})

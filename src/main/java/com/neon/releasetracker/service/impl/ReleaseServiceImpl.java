@@ -9,6 +9,7 @@ import com.neon.releasetracker.model.Release;
 import com.neon.releasetracker.model.ReleaseStatus;
 import com.neon.releasetracker.repository.ReleaseRepository;
 import com.neon.releasetracker.service.ReleaseService;
+import com.neon.releasetracker.error.exception.InvalidStatusTransitionException;
 import com.neon.releasetracker.error.exception.ReleaseNotFoundException;
 import com.neon.releasetracker.specification.ReleaseSpecification;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,7 @@ public class ReleaseServiceImpl implements ReleaseService {
     return releaseRepository
         .findById(id)
         .map(releaseMapper::toDTO)
-        .orElseThrow(() -> new ReleaseNotFoundException("release.notFound", id));
+        .orElseThrow(() -> new ReleaseNotFoundException(id));
   }
 
   @Override
@@ -54,7 +55,12 @@ public class ReleaseServiceImpl implements ReleaseService {
     Release release =
         releaseRepository
             .findById(id)
-            .orElseThrow(() -> new ReleaseNotFoundException("release.notFound", id));
+            .orElseThrow(() -> new ReleaseNotFoundException(id));
+    if (release.getStatus() != request.status()
+        && !release.getStatus().canTransitionTo(request.status())) {
+      throw new InvalidStatusTransitionException(
+          release.getStatus().getDisplayName(), request.status().getDisplayName());
+    }
     releaseMapper.updateEntity(request, release);
     return releaseMapper.toDTO(releaseRepository.save(release));
   }

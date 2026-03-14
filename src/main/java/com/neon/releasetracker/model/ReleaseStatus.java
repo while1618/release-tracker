@@ -22,4 +22,11 @@ public enum ReleaseStatus {
   public String getDisplayName() {
     return displayName;
   }
+
+  public boolean canTransitionTo(ReleaseStatus next) {
+    if (this == DONE) {
+      return false;
+    }
+    return Math.abs(next.ordinal() - this.ordinal()) == 1;
+  }
 }

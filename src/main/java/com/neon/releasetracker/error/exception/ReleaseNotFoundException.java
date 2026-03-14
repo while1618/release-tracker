@@ -9,8 +9,8 @@ public class ReleaseNotFoundException extends RuntimeException {
   private final HttpStatus status;
   private final Long id;
 
-  public ReleaseNotFoundException(String message, Long id) {
-    super(message);
+  public ReleaseNotFoundException(Long id) {
+    super("release.notFound");
     this.id = id;
     this.status = HttpStatus.NOT_FOUND;
   }

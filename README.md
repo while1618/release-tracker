@@ -108,3 +108,18 @@ The demo environment builds the application image and starts both the API and da
 ```
 
 The merged coverage report is generated at `target/site/jacoco/index.html`.
+
+---
+
+## CI/CD
+
+The project uses GitHub Actions. The pipeline runs on every push and pull request to `main`, and can also be triggered manually.
+
+**Pipeline steps:**
+
+1. **Build** — compiles the project and packages the artifact, skipping tests
+2. **Lint** — checks code formatting with Spotless
+3. **Test** — runs unit and integration tests via `mvn verify`; integration tests use Testcontainers to spin up a real PostgreSQL instance
+4. **Upload JaCoCo report** — uploads the merged coverage report as a build artifact
+
+The JaCoCo report can be downloaded from the **Artifacts** section of any GitHub Actions run.

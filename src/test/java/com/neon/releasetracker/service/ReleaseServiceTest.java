@@ -119,8 +119,7 @@ class ReleaseServiceTest {
 
   @Test
   void update_sameStatus_savesWithoutTransitionCheck() {
-    final var request =
-        new UpdateReleaseRequest("1.0.0", "Updated", ReleaseStatus.CREATED, null);
+    final var request = new UpdateReleaseRequest("1.0.0", "Updated", ReleaseStatus.CREATED, null);
 
     when(releaseRepository.findById(1L)).thenReturn(Optional.of(release));
     when(releaseRepository.save(release)).thenReturn(release);
@@ -149,8 +148,7 @@ class ReleaseServiceTest {
   @Test
   void update_validBackwardTransition_savesRelease() {
     release.setStatus(ReleaseStatus.IN_DEVELOPMENT);
-    final var request =
-        new UpdateReleaseRequest("1.0.0", "Updated", ReleaseStatus.CREATED, null);
+    final var request = new UpdateReleaseRequest("1.0.0", "Updated", ReleaseStatus.CREATED, null);
 
     when(releaseRepository.findById(1L)).thenReturn(Optional.of(release));
     when(releaseRepository.save(release)).thenReturn(release);
@@ -163,8 +161,7 @@ class ReleaseServiceTest {
 
   @Test
   void update_invalidTransitionSkipsStep_throwsInvalidStatusTransitionException() {
-    final var request =
-        new UpdateReleaseRequest("1.0.0", "Updated", ReleaseStatus.ON_DEV, null);
+    final var request = new UpdateReleaseRequest("1.0.0", "Updated", ReleaseStatus.ON_DEV, null);
 
     when(releaseRepository.findById(1L)).thenReturn(Optional.of(release));
 
@@ -174,8 +171,7 @@ class ReleaseServiceTest {
   @Test
   void update_transitionFromDone_throwsInvalidStatusTransitionException() {
     release.setStatus(ReleaseStatus.DONE);
-    final var request =
-        new UpdateReleaseRequest("1.0.0", "Updated", ReleaseStatus.ON_PROD, null);
+    final var request = new UpdateReleaseRequest("1.0.0", "Updated", ReleaseStatus.ON_PROD, null);
 
     when(releaseRepository.findById(1L)).thenReturn(Optional.of(release));
 

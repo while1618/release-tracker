@@ -77,7 +77,7 @@ class ReleaseControllerTest {
         .perform(get("/api/v1/releases/1"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(1L))
-        .andExpect(jsonPath("$.name").value("Release 1.0.0"));
+        .andExpect(jsonPath("$.name").value("1.0.0"));
   }
 
   @Test

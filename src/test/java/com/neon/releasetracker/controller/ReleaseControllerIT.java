@@ -93,7 +93,8 @@ class ReleaseControllerIT {
   @Test
   void create_validRequest_returnsCreated() throws Exception {
     final var request =
-        new CreateReleaseRequest("New Release 5.0.0", "Major release", LocalDate.of(2026, 1, 1));
+        new CreateReleaseRequest(
+            "New Release 5.0.0", "Major release", LocalDate.now().plusYears(1));
 
     mockMvc
         .perform(
@@ -108,6 +109,19 @@ class ReleaseControllerIT {
   @Test
   void create_blankName_returnsBadRequest() throws Exception {
     final var request = new CreateReleaseRequest("", "test", null);
+
+    mockMvc
+        .perform(
+            post("/api/v1/releases")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void create_pastReleaseDate_returnsBadRequest() throws Exception {
+    final var request =
+        new CreateReleaseRequest("Past Release", "test", LocalDate.now().minusDays(1));
 
     mockMvc
         .perform(
@@ -138,7 +152,7 @@ class ReleaseControllerIT {
             "Backend 2.1.0",
             "Core API improvements",
             ReleaseStatus.IN_DEVELOPMENT,
-            LocalDate.of(2025, 1, 10));
+            LocalDate.now().plusYears(1));
 
     mockMvc
         .perform(
@@ -156,7 +170,7 @@ class ReleaseControllerIT {
             "Backend 2.1.0",
             "Core API improvements",
             ReleaseStatus.DONE,
-            LocalDate.of(2025, 1, 10));
+            LocalDate.now().plusYears(1));
 
     mockMvc
         .perform(
@@ -173,7 +187,7 @@ class ReleaseControllerIT {
             "Auth 2.0.0",
             "Authentication revamp",
             ReleaseStatus.ON_PROD,
-            LocalDate.of(2025, 6, 30));
+            LocalDate.now().plusYears(1));
 
     mockMvc
         .perform(
@@ -187,7 +201,7 @@ class ReleaseControllerIT {
   void update_nonExistingId_returnsNotFound() throws Exception {
     final var request =
         new UpdateReleaseRequest(
-            "Unknown", "none", ReleaseStatus.CREATED, LocalDate.of(2025, 1, 1));
+            "Unknown", "none", ReleaseStatus.CREATED, LocalDate.now().plusYears(1));
 
     mockMvc
         .perform(

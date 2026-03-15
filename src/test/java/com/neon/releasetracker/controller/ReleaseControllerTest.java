@@ -11,7 +11,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.neon.releasetracker.dto.CreateReleaseRequest;
 import com.neon.releasetracker.dto.ReleaseDTO;
+import com.neon.releasetracker.dto.UpdateReleaseRequest;
 import com.neon.releasetracker.error.exception.InvalidStatusTransitionException;
 import com.neon.releasetracker.error.exception.ReleaseNotFoundException;
 import com.neon.releasetracker.interceptor.RequestInterceptor;
@@ -30,11 +32,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.databind.ObjectMapper;
 
 @WebMvcTest(ReleaseController.class)
 class ReleaseControllerTest {
 
   @Autowired private MockMvc mockMvc;
+  @Autowired private ObjectMapper objectMapper;
 
   @MockitoBean private ReleaseService releaseService;
   @MockitoBean private CustomLogger customLogger;
@@ -91,35 +95,40 @@ class ReleaseControllerTest {
   @Test
   void create_validRequest_returnsCreated() throws Exception {
     when(releaseService.create(any())).thenReturn(releaseDTO);
+    final var request = new CreateReleaseRequest("1.0.0", "Initial release", null);
 
     mockMvc
         .perform(
             post("/api/v1/releases")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"1.0.0\",\"description\":\"Initial release\"}"))
+                .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.name").value("1.0.0"));
   }
 
   @Test
   void create_blankName_returnsBadRequest() throws Exception {
+    final var request = new CreateReleaseRequest("", "Initial release", null);
+
     mockMvc
         .perform(
             post("/api/v1/releases")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"\"}"))
+                .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isBadRequest());
   }
 
   @Test
   void update_validRequest_returnsOk() throws Exception {
     when(releaseService.update(any(), any())).thenReturn(releaseDTO);
+    final var request =
+        new UpdateReleaseRequest("1.0.0", "Initial release", ReleaseStatus.IN_DEVELOPMENT, null);
 
     mockMvc
         .perform(
             put("/api/v1/releases/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"1.0.0\",\"status\":\"IN_DEVELOPMENT\"}"))
+                .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(1L));
   }
@@ -127,15 +136,17 @@ class ReleaseControllerTest {
   @Test
   void update_invalidStatusTransition_returnsBadRequest() throws Exception {
     when(releaseService.update(any(), any()))
-        .thenThrow(new InvalidStatusTransitionException("Created", "Done"));
+        .thenThrow(new InvalidStatusTransitionException("CREATED", "DONE"));
     when(errorService.getMessage(anyString(), any()))
-        .thenReturn("Cannot transition status from 'Created' to 'Done'.");
+        .thenReturn("Cannot transition status from 'CREATED' to 'DONE'.");
+    final var request =
+        new UpdateReleaseRequest("1.0.0", "Initial release", ReleaseStatus.DONE, null);
 
     mockMvc
         .perform(
             put("/api/v1/releases/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"1.0.0\",\"status\":\"DONE\"}"))
+                .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isBadRequest());
   }
 
@@ -143,12 +154,14 @@ class ReleaseControllerTest {
   void update_nonExistingId_returnsNotFound() throws Exception {
     when(releaseService.update(any(), any())).thenThrow(new ReleaseNotFoundException(99L));
     when(errorService.getMessage(anyString(), any())).thenReturn("Release with id 99 not found.");
+    final var request =
+        new UpdateReleaseRequest("1.0.0", "Initial release", ReleaseStatus.IN_DEVELOPMENT, null);
 
     mockMvc
         .perform(
             put("/api/v1/releases/99")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"1.0.0\",\"status\":\"IN_DEVELOPMENT\"}"))
+                .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isNotFound());
   }
 

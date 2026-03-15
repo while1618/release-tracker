@@ -1,7 +1,20 @@
 package com.neon.releasetracker.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(
+    description = "Release lifecycle status",
+    allowableValues = {
+      "Created",
+      "In Development",
+      "On DEV",
+      "QA Done on DEV",
+      "On Staging",
+      "QA Done on Staging",
+      "On PROD",
+      "Done"
+    })
 public enum ReleaseStatus {
   CREATED("Created"),
   IN_DEVELOPMENT("In Development"),

@@ -29,8 +29,11 @@ jobs:
       - name: Lint
         run: mvn -B spotless:check
 
-      - name: Unit tests
-        run: mvn -B test
+      - name: Test
+        run: mvn -B verify
 
-      - name: Integration tests
-        run: mvn -B failsafe:integration-test failsafe:verify
+      - name: Upload JaCoCo report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/

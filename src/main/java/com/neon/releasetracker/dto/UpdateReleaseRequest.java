@@ -18,7 +18,7 @@ public record UpdateReleaseRequest(
         String description,
     @Schema(
             description = "Release status. Must transition one step at a time; DONE is terminal",
-            example = "In Development")
+            example = "IN_DEVELOPMENT")
         @NotNull(message = "{release.status.notNull}")
         ReleaseStatus status,
     @Schema(description = "Planned release date", example = "2025-06-30") LocalDate releaseDate) {}

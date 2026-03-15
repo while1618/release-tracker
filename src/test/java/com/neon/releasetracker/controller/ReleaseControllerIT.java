@@ -62,7 +62,7 @@ class ReleaseControllerIT {
     mockMvc
         .perform(get("/api/v1/releases").param("status", "CREATED"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.content[0].status").value("Created"));
+        .andExpect(jsonPath("$.content[0].status").value("CREATED"));
   }
 
   @Test
@@ -82,7 +82,7 @@ class ReleaseControllerIT {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(1))
         .andExpect(jsonPath("$.name").value("Backend 2.1.0"))
-        .andExpect(jsonPath("$.status").value("Created"));
+        .andExpect(jsonPath("$.status").value("CREATED"));
   }
 
   @Test
@@ -102,7 +102,7 @@ class ReleaseControllerIT {
                 .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.name").value("New Release 5.0.0"))
-        .andExpect(jsonPath("$.status").value("Created"));
+        .andExpect(jsonPath("$.status").value("CREATED"));
   }
 
   @Test
@@ -128,7 +128,7 @@ class ReleaseControllerIT {
                 .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.name").value("Dateless Release"))
-        .andExpect(jsonPath("$.status").value("Created"));
+        .andExpect(jsonPath("$.status").value("CREATED"));
   }
 
   @Test
@@ -146,7 +146,7 @@ class ReleaseControllerIT {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.status").value("In Development"));
+        .andExpect(jsonPath("$.status").value("IN_DEVELOPMENT"));
   }
 
   @Test

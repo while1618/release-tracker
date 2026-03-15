@@ -11,7 +11,7 @@ public record ReleaseDTO(
     @Schema(description = "Release name", example = "Backend 2.1.0") String name,
     @Schema(description = "Release description", example = "Core API improvements")
         String description,
-    @Schema(description = "Current release status", example = "Created") ReleaseStatus status,
+    @Schema(description = "Current release status", example = "CREATED") ReleaseStatus status,
     @Schema(description = "Planned release date", example = "2025-06-30") LocalDate releaseDate,
     @Schema(description = "Timestamp when the release was created") Instant createdAt,
     @Schema(description = "Timestamp when the release was last updated") Instant lastUpdatedAt) {}

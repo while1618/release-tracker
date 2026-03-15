@@ -119,7 +119,7 @@ class ReleaseControllerTest {
         .perform(
             put("/api/v1/releases/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"1.0.0\",\"status\":\"In Development\"}"))
+                .content("{\"name\":\"1.0.0\",\"status\":\"IN_DEVELOPMENT\"}"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(1L));
   }
@@ -135,7 +135,7 @@ class ReleaseControllerTest {
         .perform(
             put("/api/v1/releases/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"1.0.0\",\"status\":\"Done\"}"))
+                .content("{\"name\":\"1.0.0\",\"status\":\"DONE\"}"))
         .andExpect(status().isBadRequest());
   }
 
@@ -148,7 +148,7 @@ class ReleaseControllerTest {
         .perform(
             put("/api/v1/releases/99")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"1.0.0\",\"status\":\"In Development\"}"))
+                .content("{\"name\":\"1.0.0\",\"status\":\"IN_DEVELOPMENT\"}"))
         .andExpect(status().isNotFound());
   }
 

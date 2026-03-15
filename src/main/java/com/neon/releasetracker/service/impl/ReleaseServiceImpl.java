@@ -57,7 +57,7 @@ public class ReleaseServiceImpl implements ReleaseService {
     if (release.getStatus() != request.status()
         && !release.getStatus().canTransitionTo(request.status())) {
       throw new InvalidStatusTransitionException(
-          release.getStatus().getDisplayName(), request.status().getDisplayName());
+          release.getStatus().name(), request.status().name());
     }
     releaseMapper.updateEntity(request, release);
     return releaseMapper.toDTO(releaseRepository.save(release));

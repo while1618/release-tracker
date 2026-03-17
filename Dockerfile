@@ -1,8 +1,11 @@
-FROM maven:sapmachine AS build
+FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
 COPY pom.xml .
+COPY mvnw .
+COPY .mvn ./.mvn
+RUN ./mvnw dependency:go-offline
 COPY src ./src
-RUN mvn clean install -DskipTests
+RUN ./mvnw clean install -DskipTests
 
 FROM eclipse-temurin:21-jre AS demo
 WORKDIR /app

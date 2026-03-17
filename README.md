@@ -16,7 +16,7 @@ A REST API for managing software release lifecycle.
 | Testing           | JUnit 5, Mockito, Testcontainers |
 | Coverage          | JaCoCo                           |
 | Code Style        | Spotless / Google Java Format    |
-| Build             | Maven                            |
+| Build             | Maven Wrapper (mvnw)             |
 | Containerization  | Docker                           |
 
 ## Running the Project
@@ -24,7 +24,6 @@ A REST API for managing software release lifecycle.
 ### Prerequisites
 
 - Java 21
-- Maven 3.9+
 - Docker (for dev/demo environments)
 
 ---
@@ -53,7 +52,7 @@ A REST API for managing software release lifecycle.
 
    Open the project in IntelliJ, set the active Spring profile to `dev`, then run `ReleasetrackerApplication`.
 
-   Alternatively, via Maven:
+   Alternatively, via Maven Wrapper:
 
    ```bash
    ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
@@ -117,9 +116,9 @@ The project uses GitHub Actions. The pipeline runs on every push and pull reques
 
 **Pipeline steps:**
 
-1. **Build** — compiles the project and packages the artifact, skipping tests
-2. **Lint** — checks code formatting with Spotless
-3. **Test** — runs unit and integration tests via `mvn verify`; integration tests use Testcontainers to spin up a real PostgreSQL instance
-4. **Upload JaCoCo report** — uploads the merged coverage report as a build artifact
+1. **Build**: compiles the project and packages the artifact, skipping tests
+2. **Lint**: checks code formatting with Spotless
+3. **Test**: runs unit and integration tests via `./mvnw verify`; integration tests use Testcontainers to spin up a real PostgreSQL instance
+4. **Upload JaCoCo report**: uploads the merged coverage report as a build artifact
 
 The JaCoCo report can be downloaded from the **Artifacts** section of any GitHub Actions run.

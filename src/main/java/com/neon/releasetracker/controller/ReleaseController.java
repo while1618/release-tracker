@@ -106,7 +106,7 @@ public class ReleaseController {
   @Operation(
       summary = "Delete a release",
       description =
-          "Deletes a release by ID. Idempotent — returns 204 even if the release does not exist")
+          "Deletes a release by ID. Idempotent, returns 204 even if the release does not exist")
   @ApiResponse(responseCode = "204", description = "Release deleted")
   public ResponseEntity<Void> delete(@Parameter(description = "Release ID") @PathVariable Long id) {
     releaseService.delete(id);

@@ -24,13 +24,13 @@ jobs:
           cache: maven
 
       - name: Build
-        run: mvn -B clean install -DskipTests
+        run: ./mvnw -B clean install -DskipTests
 
       - name: Lint
-        run: mvn -B spotless:check
+        run: ./mvnw -B spotless:check
 
       - name: Test
-        run: mvn -B verify
+        run: ./mvnw -B verify
 
       - name: Upload JaCoCo report
         uses: actions/upload-artifact@v4

@@ -6,7 +6,7 @@ A REST API for managing software release lifecycle.
 
 | Category          | Technology                       |
 |-------------------|----------------------------------|
-| Language          | Java 21                          |
+| Language          | Java 25                          |
 | Framework         | Spring Boot 4                    |
 | Database          | PostgreSQL                       |
 | Migrations        | Flyway                           |

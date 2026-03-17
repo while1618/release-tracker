@@ -6,11 +6,11 @@ import com.neon.releasetracker.dto.ReleaseFilter;
 import com.neon.releasetracker.dto.UpdateReleaseRequest;
 import com.neon.releasetracker.error.exception.InvalidStatusTransitionException;
 import com.neon.releasetracker.error.exception.ReleaseNotFoundException;
+import com.neon.releasetracker.logger.CustomLogger;
 import com.neon.releasetracker.mapper.ReleaseMapper;
 import com.neon.releasetracker.model.Release;
 import com.neon.releasetracker.model.ReleaseStatus;
 import com.neon.releasetracker.repository.ReleaseRepository;
-import com.neon.releasetracker.logger.CustomLogger;
 import com.neon.releasetracker.service.ReleaseService;
 import com.neon.releasetracker.specification.ReleaseSpecification;
 import lombok.RequiredArgsConstructor;
@@ -76,8 +76,10 @@ public class ReleaseServiceImpl implements ReleaseService {
                 });
     if (release.getStatus() != request.status()
         && !release.getStatus().canTransitionTo(request.status())) {
-      var ex = new InvalidStatusTransitionException(release.getStatus().name(), request.status().name());
-      customLogger.error("Invalid status transition from " + release.getStatus() + " to " + request.status(), ex);
+      var ex =
+          new InvalidStatusTransitionException(release.getStatus().name(), request.status().name());
+      customLogger.error(
+          "Invalid status transition from " + release.getStatus() + " to " + request.status(), ex);
       throw ex;
     }
     releaseMapper.updateEntity(request, release);

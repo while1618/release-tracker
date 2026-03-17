@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 public class ErrorMessage {
   @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
   private final LocalDateTime timestamp;
+
   private final int status;
   private final String error;
   private final List<String> messages;

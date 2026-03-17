@@ -56,13 +56,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler({InvalidStatusTransitionException.class})
   public ResponseEntity<Object> handleInvalidStatusTransition(InvalidStatusTransitionException e) {
-    customLogger.error("Invalid status transition", e);
     return createError(e.getStatus(), errorService.getMessage(e.getMessage(), e.getArgs()));
   }
 
   @ExceptionHandler({ReleaseNotFoundException.class})
   public ResponseEntity<Object> handleResourceNotFoundException(ReleaseNotFoundException e) {
-    customLogger.error("Release not found", e);
     return createError(e.getStatus(), errorService.getMessage(e.getMessage(), e.getId()));
   }
 

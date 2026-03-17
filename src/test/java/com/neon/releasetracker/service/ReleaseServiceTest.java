@@ -13,6 +13,7 @@ import com.neon.releasetracker.dto.ReleaseFilter;
 import com.neon.releasetracker.dto.UpdateReleaseRequest;
 import com.neon.releasetracker.error.exception.InvalidStatusTransitionException;
 import com.neon.releasetracker.error.exception.ReleaseNotFoundException;
+import com.neon.releasetracker.logger.CustomLogger;
 import com.neon.releasetracker.mapper.ReleaseMapper;
 import com.neon.releasetracker.model.Release;
 import com.neon.releasetracker.model.ReleaseStatus;
@@ -36,6 +37,7 @@ class ReleaseServiceTest {
 
   @Mock private ReleaseRepository releaseRepository;
   @Mock private ReleaseMapper releaseMapper;
+  @Mock private CustomLogger customLogger;
 
   private ReleaseServiceImpl releaseService;
 
@@ -44,7 +46,7 @@ class ReleaseServiceTest {
 
   @BeforeEach
   void setUp() {
-    releaseService = new ReleaseServiceImpl(releaseRepository, releaseMapper);
+    releaseService = new ReleaseServiceImpl(releaseRepository, releaseMapper, customLogger);
 
     release =
         Release.builder()

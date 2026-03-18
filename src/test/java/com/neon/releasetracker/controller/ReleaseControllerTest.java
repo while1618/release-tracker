@@ -17,7 +17,6 @@ import com.neon.releasetracker.dto.UpdateReleaseRequest;
 import com.neon.releasetracker.error.exception.InvalidStatusTransitionException;
 import com.neon.releasetracker.error.exception.ReleaseNotFoundException;
 import com.neon.releasetracker.interceptor.RequestInterceptor;
-import com.neon.releasetracker.logger.CustomLogger;
 import com.neon.releasetracker.model.ReleaseStatus;
 import com.neon.releasetracker.service.ErrorService;
 import com.neon.releasetracker.service.ReleaseService;
@@ -41,7 +40,6 @@ class ReleaseControllerTest {
   @Autowired private ObjectMapper objectMapper;
 
   @MockitoBean private ReleaseService releaseService;
-  @MockitoBean private CustomLogger customLogger;
   @MockitoBean private ErrorService errorService;
   @MockitoBean private RequestInterceptor requestInterceptor;
 

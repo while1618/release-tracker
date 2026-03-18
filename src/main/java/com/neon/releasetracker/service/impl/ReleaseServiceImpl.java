@@ -6,7 +6,6 @@ import com.neon.releasetracker.dto.ReleaseFilter;
 import com.neon.releasetracker.dto.UpdateReleaseRequest;
 import com.neon.releasetracker.error.exception.InvalidStatusTransitionException;
 import com.neon.releasetracker.error.exception.ReleaseNotFoundException;
-import com.neon.releasetracker.logger.CustomLogger;
 import com.neon.releasetracker.mapper.ReleaseMapper;
 import com.neon.releasetracker.model.Release;
 import com.neon.releasetracker.model.ReleaseStatus;
@@ -14,11 +13,13 @@ import com.neon.releasetracker.repository.ReleaseRepository;
 import com.neon.releasetracker.service.ReleaseService;
 import com.neon.releasetracker.specification.ReleaseSpecification;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -26,11 +27,10 @@ public class ReleaseServiceImpl implements ReleaseService {
 
   private final ReleaseRepository releaseRepository;
   private final ReleaseMapper releaseMapper;
-  private final CustomLogger customLogger;
 
   @Override
   public Page<ReleaseDTO> findAll(ReleaseFilter filter, Pageable pageable) {
-    customLogger.info("Fetching releases with filter: " + filter);
+    log.info("Fetching releases with filter: " + filter);
     return releaseRepository
         .findAll(ReleaseSpecification.withFilter(filter), pageable)
         .map(releaseMapper::toDTO);
@@ -38,14 +38,14 @@ public class ReleaseServiceImpl implements ReleaseService {
 
   @Override
   public ReleaseDTO findById(Long id) {
-    customLogger.info("Fetching release with id: " + id);
+    log.info("Fetching release with id: " + id);
     return releaseRepository
         .findById(id)
         .map(releaseMapper::toDTO)
         .orElseThrow(
             () -> {
               var ex = new ReleaseNotFoundException(id);
-              customLogger.error("Release not found with id: " + id, ex);
+              log.error("Release not found with id: " + id, ex);
               return ex;
             });
   }
@@ -53,46 +53,46 @@ public class ReleaseServiceImpl implements ReleaseService {
   @Override
   @Transactional
   public ReleaseDTO create(CreateReleaseRequest request) {
-    customLogger.info("Creating release: " + request.name());
+    log.info("Creating release: " + request.name());
     Release release = releaseMapper.toEntity(request);
     release.setStatus(ReleaseStatus.CREATED);
     ReleaseDTO created = releaseMapper.toDTO(releaseRepository.save(release));
-    customLogger.info("Release created with id: " + created.id());
+    log.info("Release created with id: " + created.id());
     return created;
   }
 
   @Override
   @Transactional
   public ReleaseDTO update(Long id, UpdateReleaseRequest request) {
-    customLogger.info("Updating release with id: " + id);
+    log.info("Updating release with id: " + id);
     Release release =
         releaseRepository
             .findById(id)
             .orElseThrow(
                 () -> {
                   var ex = new ReleaseNotFoundException(id);
-                  customLogger.error("Release not found with id: " + id, ex);
+                  log.error("Release not found with id: " + id, ex);
                   return ex;
                 });
     if (release.getStatus() != request.status()
         && !release.getStatus().canTransitionTo(request.status())) {
       var ex =
           new InvalidStatusTransitionException(release.getStatus().name(), request.status().name());
-      customLogger.error(
+      log.error(
           "Invalid status transition from " + release.getStatus() + " to " + request.status(), ex);
       throw ex;
     }
     releaseMapper.updateEntity(request, release);
     ReleaseDTO updated = releaseMapper.toDTO(releaseRepository.save(release));
-    customLogger.info("Release updated with id: " + id);
+    log.info("Release updated with id: " + id);
     return updated;
   }
 
   @Override
   @Transactional
   public void delete(Long id) {
-    customLogger.info("Deleting release with id: " + id);
+    log.info("Deleting release with id: " + id);
     releaseRepository.deleteById(id);
-    customLogger.info("Release deleted with id: " + id);
+    log.info("Release deleted with id: " + id);
   }
 }
